@@ -1,0 +1,901 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.Sql;
+using System.Data.SqlClient;
+using DGVPrinterHelper;
+namespace Restaurant
+{
+    public partial class frmtb6 : Form
+    {
+
+        frmrecipe1 frmrp1 = new frmrecipe1();
+        frmrecipe1x frmrp1x = new frmrecipe1x();
+        frmrecipe2xx frmrp2xx = new frmrecipe2xx();
+        
+        frmrecipe2x frmrp2x = new frmrecipe2x();
+
+
+        /*public static class Globals
+        {
+            public const Int32 count2 = 0; // Unmodifiable
+            public static String s_Name = "Mike"; // Modifiable
+            public static readonly String s_City = "New York"; // Unmodifiable
+        }*/
+
+        int count = 0;
+
+        public frmtb6()
+        {
+            InitializeComponent();
+                       
+        }
+
+
+
+        public string _lbltable2
+        {
+            get { return lbltable2.Text; }
+            
+        }
+
+        public string _uppax2
+        {
+            get { return uppax2.Text; }
+
+        }
+
+        public string _txttotal
+        {
+            get { return txttotal.Text; }
+        }
+
+        //*****************************************//
+
+        public string _txtcash
+        {
+            get { return txtcash.Text; }
+        }
+
+        public string _txtchange
+        {
+            get { return txtchange.Text; }
+        }
+
+        public string _lbldiscount
+        {
+            get { return lbldiscount.Text; }
+        }
+
+        public string _txttotal2
+        {
+            get { return txttotal2.Text; }
+        }
+
+        public string _date
+        {
+            get { return lbldate2.Text; }
+        }
+
+        public string _pasi { get { return lblpasi.Text; } }
+        public string _pasiaf { get { return lblpasiaf.Text; } }
+
+        
+
+        
+       
+        
+        int ttotal = 0;
+       
+
+        private void totalbutton()
+        {
+            int iTotal = 0;
+            foreach (DataGridViewRow row2 in this.gvtb.Rows)
+            {
+                iTotal = iTotal + Convert.ToInt32(row2.Cells["price"].Value);
+            }
+            this.txttotal.Text = String.Format("{0}", iTotal);
+            this.txttotal2.Text = String.Format("{0}", iTotal);
+
+            lbldiscount.Text = "-".ToString();
+        }
+
+        public void tax()
+        {
+            double a,pasi,pasiaf;
+            a = int.Parse(txttotal.Text);
+            pasi = a * 7 / 100;
+            pasiaf = a - pasi;
+
+            lblpasi.Text = pasi.ToString();
+            lblpasiaf.Text = pasiaf.ToString();
+
+        }
+
+        void CheckRow(string menu, double price)
+        {
+            
+            bool b = false;
+            for (int i = 0; i < gvtb.RowCount; i++)
+            {
+                if (gvtb[1, i].Value.ToString() == menu)
+                {
+                    gvtb[0, i].Value = (int)gvtb[0, i].Value + 1;//qty
+                    gvtb[2, i].Value = (int)gvtb[0, i].Value * price;//sum price
+                    b = true;
+                }
+            }
+            if (b == false)
+                gvtb.Rows.Add(1, menu, price);//ถ้าไม่มีใน datagrid ก็ให้ Add
+            gvtb.ClearSelection();
+
+        }
+
+
+        
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            DateTime localDate = DateTime.Now;
+            lbldate2.Text = (localDate.ToString());
+            gvtb.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+
+            int PreferredZoomValue = 100;
+
+            printPreviewDialog1.PrintPreviewControl.Zoom = PreferredZoomValue / 100f;
+            printPreviewDialog2.PrintPreviewControl.Zoom = PreferredZoomValue / 100f;
+            printPreviewDialog2.WindowState = FormWindowState.Maximized;
+            printPreviewDialog1.WindowState = FormWindowState.Maximized;
+
+            
+
+
+
+        }
+
+
+
+        private void btnyapla1_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำยาปลา", 79);
+
+            this.totalbutton();
+            
+
+
+
+        }
+        
+        private void btnform1_Click(object sender, EventArgs e)
+        {
+            Form1 goform1 = new Form1();
+            goform1.Show();
+
+
+        }
+
+        private void lbltotal_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void gvtb_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void btnnamprig1_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำพริก", 89);
+
+            this.totalbutton();
+        }
+
+        private void lblchange_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        Bitmap bmp;
+        private void btnprint_Click(object sender, EventArgs e)
+        {
+            
+
+            gvtb.ClearSelection();
+
+            tax();
+
+            Globals.checkprint = 1;
+            Globals.counttax = Globals.counttax + 1;
+
+            int height = gvtb.Height;
+            gvtb.Height = gvtb.RowCount * gvtb.RowTemplate.Height * 4;
+            bmp = new Bitmap(gvtb.Width, gvtb.Height);
+            gvtb.DrawToBitmap(bmp, new Rectangle(0, 0, gvtb.Width, gvtb.Height));
+            gvtb.Height = height;
+
+            printPreviewDialog1.ShowDialog();
+
+
+
+        }
+
+        private void clear_data()
+        {
+            while (gvtb.Rows.Count > 0)
+            {
+                gvtb.Rows.RemoveAt(0);
+            }
+            while (gvtb.Columns.Count > 3)
+            {
+                gvtb.Columns.RemoveAt(3);
+            }
+
+            txtchange.Text = "".ToString();
+            txtcash.Text = 0.ToString();
+            txttotal.Text = "".ToString();
+            txttotal2.Text = "".ToString();
+            lbldiscount.Text = "-".ToString();
+
+        }
+
+
+        private void btncash_Click(object sender, EventArgs e)
+        {
+            int a, b, c;
+            a = int.Parse(txttotal2.Text);
+            b = int.Parse(txtcash.Text);
+            c = b - a;
+
+            if (Globals.checkprint == 0)
+            {
+                MessageBox.Show("คุณยังไม่ได้ปริ๊นใบเสร็จใบแรก");
+            }
+            else if (Globals.checkprint == 1)
+            {
+                if (string.IsNullOrWhiteSpace(txtcash.Text))
+                {
+                    MessageBox.Show("ระบุเงินสดที่รับก่อน");
+                }
+
+              
+
+                else if (b < a)
+                {
+                    MessageBox.Show("รับเงินมาน้อยกว่าราคาอาหาร");
+                }
+
+                else
+                {                 
+
+                    txtchange.Text = c.ToString();
+
+                    gvtb.ClearSelection();
+                    printPreviewDialog2.ShowDialog();
+                    Globals.checkprint = 0;
+                }
+            
+            }
+            
+        }
+
+        private void btnyapoo_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำยาปู", 119);
+
+            this.totalbutton();
+        }
+
+        private void greencurry_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("แกงเขียวหวาน",89);
+
+            this.totalbutton();
+        }
+
+        private void btnclear_Click(object sender, EventArgs e)
+        {
+            this.clear_data();
+        }
+
+        private void btndel_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in gvtb.SelectedRows)
+            {
+                gvtb.Rows.RemoveAt(0);
+            }
+            
+            this.totalbutton();
+
+
+        }
+
+        private void delete_data()
+        {
+            string sql = "delete from tmpOrder";
+            int i = new DBClass().SqlExecute(sql);
+
+        }
+        
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            frmrp1x.Hide();
+            frmrp2xx.Hide();
+
+            this.clear_data();
+            this.Hide();
+            this.delete_data();
+
+            Globals.status6 = 0; //end
+
+            //this.lbltable2 = null;       
+
+
+
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnhold_Click(object sender, EventArgs e)
+        {
+            frmMain frmmain = new frmMain();
+           
+            this.WindowState = FormWindowState.Minimized;
+            
+
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            Button button = new Button();
+            button.Click += new EventHandler(button_Click);
+
+            
+        }
+        protected void button_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btndis10_Click(object sender, EventArgs e)
+        {
+            int iTotal = 0;
+            foreach (DataGridViewRow row2 in this.gvtb.Rows)
+            {
+                iTotal = iTotal + Convert.ToInt32(row2.Cells["price"].Value);
+            }
+            this.txttotal.Text = String.Format("{0}", iTotal);
+            lbldiscount.Text = "10%";
+
+            ttotal = iTotal * 90 / 100+1;
+            txttotal2.Text = ttotal.ToString();
+
+        }
+
+        private void btndis15_Click(object sender, EventArgs e)
+        {
+
+            int iTotal = 0;
+            foreach (DataGridViewRow row2 in this.gvtb.Rows)
+            {
+                iTotal = iTotal + Convert.ToInt32(row2.Cells["price"].Value);
+            }
+            this.txttotal.Text = String.Format("{0}", iTotal);
+            lbldiscount.Text = "15%";
+
+            ttotal = iTotal * 85 / 100+1;
+            txttotal2.Text = ttotal.ToString();
+        }
+
+        private void btndis20_Click(object sender, EventArgs e)
+        {
+            int iTotal = 0;
+            foreach (DataGridViewRow row2 in this.gvtb.Rows)
+            {
+                iTotal = iTotal + Convert.ToInt32(row2.Cells["price"].Value);
+            }
+            this.txttotal.Text = String.Format("{0}", iTotal);
+            lbldiscount.Text = "20%";
+
+            ttotal = iTotal * 80 / 100+1;
+            txttotal2.Text = ttotal.ToString();
+        }
+
+        private void btndis100_Click(object sender, EventArgs e)
+        {
+            int iTotal = 0;
+            foreach (DataGridViewRow row2 in this.gvtb.Rows)
+            {
+                iTotal = iTotal + Convert.ToInt32(row2.Cells["price"].Value);
+            }
+            this.txttotal.Text = String.Format("{0}", iTotal);
+            lbldiscount.Text = "FREE";
+
+            ttotal = iTotal * 0;
+            txttotal2.Text = ttotal.ToString();
+        }
+
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            int[] col = { 130, 250, 410 ,500};
+            Font fnt = new Font("Angsana New", 20);
+            Font fnt0 = new Font("Angsana New", 20,FontStyle.Italic);
+            Font fnt1 = new Font("Angsana New", 24, FontStyle.Bold);
+            Font fnt2 = new Font("Angsana New", 24);
+            Pen blackpen = new Pen(Color.Black, 3);
+            Pen blackpen2 = new Pen(Color.Black, 5);
+            int line = 100;
+            
+            Point p1 = new Point(130, line + 130 );
+            Point p2 = new Point(750, line + 130);
+            Point p3 = new Point(130, line + 201);
+            Point p4 = new Point(750, line + 201);
+
+            int height2 = bmp.Height / 4;
+
+            Point p5 = new Point(200, height2 + line + 432);
+            Point p6 = new Point(670, height2 + line + 432);
+            Point p7 = new Point(200, height2 + line + 647);
+            Point p8 = new Point(670, height2 + line + 647);
+            
+
+            //e.Graphics.DrawString("l",fnt, Brushes.Black, 408, line-30);
+            e.Graphics.DrawString("KANOM CHINE BANGKOK CO.,LTD", fnt, Brushes.Black, 250, line);//27 250 408-(13.5*12)
+            e.Graphics.DrawString("THE MALL BANGKAE / TEL. 02-454-9435", fnt, Brushes.Black, 232, line+28);
+            e.Graphics.DrawString("RECEITPT / TAX INVOICE", fnt, Brushes.Black, 295, line+56);
+
+            e.Graphics.DrawLine(blackpen,p1,p2);//line+130
+
+            e.Graphics.DrawString("BILL : 0000" + Globals.counttax, fnt2, Brushes.Black, col[0], line + 140);
+            e.Graphics.DrawString("Table : 6",fnt2, Brushes.Black, 315, line + 140);
+            e.Graphics.DrawString("Pax : " + _uppax2, fnt2, Brushes.Black, 460, line + 140);
+            e.Graphics.DrawString(_date, fnt2, Brushes.Black, 560, line + 140);
+
+            e.Graphics.DrawLine(blackpen,p3, p4);//+28
+            e.Graphics.DrawLine(blackpen, p3, p4);
+
+            e.Graphics.DrawString("จำนวน",fnt,Brushes.Black,245,line+230);
+            e.Graphics.DrawString("รายการ", fnt, Brushes.Black, 335, line+230);
+            e.Graphics.DrawString("ราคา", fnt, Brushes.Black, 549, line+230);
+
+            e.Graphics.DrawImage(bmp, 215, line + 285);
+
+            e.Graphics.DrawString("ราคา", fnt, Brushes.Black, 335, height2 + line + 322);
+            e.Graphics.DrawString(_txttotal, fnt, Brushes.Black, 549, height2+line+322/*+line + 345*/);
+
+            e.Graphics.DrawString("ส่วลด", fnt, Brushes.Black, 130, height2 + line + 362);
+            e.Graphics.DrawString(_lbldiscount, fnt, Brushes.Black, 245, height2 + line + 362);
+            e.Graphics.DrawString("ราคาสุทธิ", fnt, Brushes.Black, 335, height2 + line + 362);
+            e.Graphics.DrawString(_txttotal2, fnt1, Brushes.Black, 549, height2 + line + 362);
+
+            e.Graphics.DrawLine(blackpen, p5,p6);//+477
+
+           
+
+            e.Graphics.DrawString("( VAT  7%    : " + _pasi + "          VAT ABLE    : " + _pasiaf +")", fnt0, Brushes.Black, 245, height2 + line + 462);
+            
+            
+
+
+
+            
+        }
+
+        private void gvtb_SelectionChanged(object sender, EventArgs e)
+        {
+           
+
+        }
+
+        private void button2_Click_2(object sender, EventArgs e)
+        {
+            int iTotal = 0;
+            foreach (DataGridViewRow row2 in this.gvtb.Rows)
+            {
+                iTotal = iTotal + Convert.ToInt32(row2.Cells["price"].Value);
+            }
+            this.txttotal.Text = String.Format("{0}", iTotal);
+            lbldiscount.Text = "50%";
+
+            ttotal = iTotal * 50 / 100 + 1;
+            txttotal2.Text = ttotal.ToString();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void printDocument2_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            int[] col = { 130, 250, 410, 500 };
+            Font fnt = new Font("Angsana New", 20);
+            Font fnt0 = new Font("Angsana New", 20, FontStyle.Italic);
+            Font fnt1 = new Font("Angsana New", 24, FontStyle.Bold);
+            Font fnt2 = new Font("Angsana New", 24);
+            Pen blackpen = new Pen(Color.Black, 3);
+            Pen blackpen2 = new Pen(Color.Black, 5);
+            int line = 100;
+
+            Point p1 = new Point(130, line + 130);
+            Point p2 = new Point(750, line + 130);
+            Point p3 = new Point(130, line + 201);
+            Point p4 = new Point(750, line + 201);
+
+            int height2 = bmp.Height / 4;
+
+            Point p5 = new Point(200, height2 + line + 500);
+            Point p6 = new Point(670, height2 + line + 500);
+            Point p7 = new Point(200, height2 + line + 647);
+            Point p8 = new Point(670, height2 + line + 647);
+
+
+            //e.Graphics.DrawString("l",fnt, Brushes.Black, 408, line-30);
+            e.Graphics.DrawString("KANOM CHINE BANGKOK CO.,LTD", fnt, Brushes.Black, 250, line);//27 250 408-(13.5*12)
+            e.Graphics.DrawString("THE MALL BANGKAE / TEL. 02-454-9435", fnt, Brushes.Black, 232, line + 28);
+            e.Graphics.DrawString("RECEITPT / TAX INVOICE", fnt, Brushes.Black, 295, line + 56);
+
+            e.Graphics.DrawLine(blackpen, p1, p2);//line+130
+
+            e.Graphics.DrawString("BILL : 0000" + Globals.counttax, fnt2, Brushes.Black, col[0], line + 140);
+            e.Graphics.DrawString("Table : 6", fnt2, Brushes.Black, 315, line + 140);
+            e.Graphics.DrawString("Pax : " + _uppax2, fnt2, Brushes.Black, 460, line + 140);
+            e.Graphics.DrawString(_date, fnt2, Brushes.Black, 560, line + 140);
+
+            e.Graphics.DrawLine(blackpen, p3, p4);//+28
+            e.Graphics.DrawLine(blackpen, p3, p4);
+
+            e.Graphics.DrawString("จำนวน", fnt, Brushes.Black, 245, line + 230);
+            e.Graphics.DrawString("รายการ", fnt, Brushes.Black, 335, line + 230);
+            e.Graphics.DrawString("ราคา", fnt, Brushes.Black, 549, line + 230);
+
+            e.Graphics.DrawImage(bmp, 215, line + 285);
+
+            e.Graphics.DrawString("ราคา", fnt, Brushes.Black, 335, height2 + line + 322);
+            e.Graphics.DrawString(_txttotal, fnt, Brushes.Black, 549, height2 + line + 322/*+line + 345*/);
+
+            e.Graphics.DrawString("ส่วลด", fnt, Brushes.Black, 130, height2 + line + 362);
+            e.Graphics.DrawString(_lbldiscount, fnt, Brushes.Black, 245, height2 + line + 362);
+            e.Graphics.DrawString("ราคาสุทธิ", fnt, Brushes.Black, 335, height2 + line + 362);
+            e.Graphics.DrawString(_txttotal2, fnt1, Brushes.Black, 549, height2 + line + 362);
+
+            e.Graphics.DrawString("เงินสด", fnt, Brushes.Black, 335, height2 + line + 402);
+            e.Graphics.DrawString(_txtcash, fnt, Brushes.Black, 549, height2 + line + 402);
+
+            e.Graphics.DrawString("เงินทอน", fnt, Brushes.Black, 335, height2 + line + 440);
+            e.Graphics.DrawString(_txtchange, fnt, Brushes.Black, 549, height2 + line + 440);
+
+
+            e.Graphics.DrawLine(blackpen, p5, p6);//+477 677 500
+
+           
+
+            e.Graphics.DrawString("( VAT  7%    : "+ _pasi+"          VAT ABLE    : "+_pasiaf+ "          Payment  Cash    :  " + _txtcash+")", fnt0, Brushes.Black, 130, height2 + line +477+48);
+           
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click_2(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำยาใต้", 79);
+
+            this.totalbutton();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำเงี้ยว", 89);
+
+            this.totalbutton();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("แกงป่า", 79);
+
+            this.totalbutton();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ปีกไก่รมควัน", 129);
+
+            this.totalbutton();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ลูกชิ้นปลาบางกอก", 79);
+
+            this.totalbutton();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("หมูหมักลวกจิ้ม", 119);
+
+            this.totalbutton();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ปอเปี๊ยะบางกอก", 89);
+
+            this.totalbutton();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("หมูนุ่มบางกอก", 119);
+
+            this.totalbutton();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("คอหมูอบจิ้มแจ่ว", 119);
+
+            this.totalbutton();
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ยำลูกชิ้น", 99);
+
+            this.totalbutton();
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ทอดมันกุ้ง", 119);
+
+            this.totalbutton();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ปลากะพงลวกจิ้ม", 119);
+
+            this.totalbutton();
+        }
+
+        private void button22_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("คะน้าหมูกรอบ", 129);
+
+            this.totalbutton();
+        }
+
+        private void button23_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ผัดผักรวมมิตร", 119);
+
+            this.totalbutton();
+        }
+
+        private void button20_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("หมูกรอบผัดพริกเผา", 119);
+
+            this.totalbutton();
+        }
+
+        private void button21_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำพริกกุ้งสด", 119);
+
+            this.totalbutton();
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("หมูนุ่มผัดกะปิ", 119);
+
+            this.totalbutton();
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("แกงส้มชะอมไข่กุ้งสด", 139);
+
+            this.totalbutton();
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("แกงเลียง", 149);
+
+            this.totalbutton();
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ต้มยำเห็ด", 139);
+
+            this.totalbutton();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ต้มแซ่บกระดูกอ่อน", 139);
+
+            this.totalbutton();
+        }
+
+        private void button24_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำยาไก่", 79);
+
+            this.totalbutton();
+        }
+
+        private void button25_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ซาวน้ำ", 129);
+
+            this.totalbutton();
+        }
+
+        private void button26_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void printPreviewDialog1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtcash_Click(object sender, EventArgs e)
+        {
+            txtcash.Clear();
+        }
+
+        private void button33_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ไอศครีมกะทิ", 29);
+            this.totalbutton();
+        }
+
+        private void button34_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("กล้วยไข่ไอศครีม", 35);
+            this.totalbutton();
+        }
+
+        private void button31_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("กล้วยไข่บวชชี", 35);
+            this.totalbutton();
+        }
+
+        private void button32_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("เฉาก๊วย", 29);
+            this.totalbutton();
+        }
+
+        private void button30_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ทับทิมกรอบ", 35);
+            this.totalbutton();
+        }
+
+        private void button42_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำใบเตย", 29);
+            this.totalbutton();
+        }
+
+        private void button43_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำตะไคร้", 29);
+            this.totalbutton();
+        }
+
+        private void button40_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำเก๊กฮวย", 29);
+            this.totalbutton();
+        }
+
+        private void button41_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำกระเจี๊ยบ", 29);
+            this.totalbutton();
+        }
+
+        private void button39_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำลำใย", 29);
+            this.totalbutton();
+        }
+
+        private void button37_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำมะนาว", 79);
+            this.totalbutton();
+        }
+
+        private void button36_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ชามะนาว", 49);
+            this.totalbutton();
+        }
+
+        private void button35_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("กาแฟเย็น", 49);
+            this.totalbutton();
+        }
+
+        private void button38_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำแข็ง", 3);
+            this.totalbutton();
+        }
+
+        private void button26_Click_1(object sender, EventArgs e)
+        {
+            this.CheckRow("น้ำเปล่า", 15);
+            this.totalbutton();
+        }
+
+        private void button28_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ข้าวเปล่า", 15);
+            this.totalbutton();
+        }
+
+        private void button27_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ข้าวเหนียว", 15);
+            this.totalbutton();
+        }
+
+        private void button29_Click(object sender, EventArgs e)
+        {
+            this.CheckRow("ขนมจีนเปล่า", 15);
+            this.totalbutton();
+        }
+
+       
+    }
+}

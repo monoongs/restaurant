@@ -1,0 +1,27 @@
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\bin\Debug\Restaurant.exe.config
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\bin\Debug\Restaurant.exe
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\bin\Debug\Restaurant.pdb
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.Form1.resources
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.Properties.Resources.resources
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.csproj.GenerateResource.Cache
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.exe
+c:\users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.pdb
+C:\Users\casper\Documents\Visual Studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmlogin.resources
+C:\Users\casper\Documents\Visual Studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb2.resources
+C:\Users\casper\Documents\Visual Studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.csprojResolveAssemblyReference.cache
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmMain.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb4.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\bin\Debug\DGV Printer.dll
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb5.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb6.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb7.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb8.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb9.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb10.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb11.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb12.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb1N.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmtb3N.resources
+C:\Users\casper\documents\visual studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmreport.resources
+C:\Users\casper\Documents\Visual Studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmconfirm.resources
+C:\Users\casper\Documents\Visual Studio 2017\Projects\Restaurant\Restaurant\obj\Debug\Restaurant.frmchart.resources
